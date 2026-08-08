@@ -1,0 +1,23 @@
+{
+  "stores": "all",
+  "recordLabel": "My Label",
+  "language": "English",
+  "genrePrimary": "Hip Hop/Rap",
+  "genreSecondary": "Pop",
+  "songwriter": {
+    "first": "Ivan",
+    "middle": "",
+    "last": "Petrenko",
+    "role": "Music and lyrics"
+  },
+  "composer": "Ivan Petrenko",
+  "featuredArtist": false,
+  "versionInfo": "none",
+  "isCoverSong": false,
+  "explicit": false,
+  "radioEditClean": false,
+  "instrumental": false,
+  "aiGenerated": false,
+  "dolbyAtmos": false,
+  "checkMandatoryCheckboxes": true
+}

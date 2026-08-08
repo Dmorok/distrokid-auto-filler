@@ -1,0 +1,95 @@
+# DistroKid Auto-Filler (Chrome extension)
+
+Розширення для `https://distrokid.com/new/`. Заповнює назви треків з файлів у папці, прикріплює самі аудіофайли до полів завантаження і заповнює решту полів з пресету JSON. Кількість пісень і фінальну перевірку ти робиш вручну — усе інше розширення підставляє за тебе.
+
+## Встановлення
+
+1. Відкрий `chrome://extensions`.
+2. Увімкни "Режим розробника" (Developer mode) у правому верхньому куті.
+3. Натисни "Завантажити розпаковане" (Load unpacked).
+4. Обери папку `distrokid-filler`.
+5. Іконка розширення з'явиться на панелі. Закріпи її, якщо треба.
+
+## Як користуватись
+
+1. Зайди на `distrokid.com/new/`, вибери сторі, вручну постав кількість пісень (Number of songs) — DistroKid після цього намалює потрібну кількість блоків треків.
+2. Відкрий попап розширення.
+   - Вгорі показано, скільки блоків треків знайдено на сторінці — звір із кількістю пісень.
+3. **Крок 1. Папка з mp3** — натисни "Обрати файли" й вибери папку з треками (Chrome попросить дозвіл на весь вміст папки — це нормально, файли нікуди не завантажуються, тільки читаються назви).
+   - Файли сортуються природньо (01, 02, …10, а не 1, 10, 2).
+   - Чекбокси нижче: прибрати UUID в кінці назви (`Song - 10f89618-….mp3` → `Song`), прибрати номер треку (`01 - Song.mp3` → `Song`), замінити `_`/`-` на пробіли.
+4. **Крок 2. Пресет JSON** — завантаж файл пресету (див. `preset.example.json`). Останній завантажений пресет запам'ятовується в розширенні.
+5. **Крок 3.** Натисни "Заповнити все" — розширення підставить назви треків і всі поля з пресету, включно з чекбоксами сторів та обов'язковими чекбоксами внизу форми.
+6. **Крок 4. Аудіофайли** — натисни "Показати панель на сторінці". Внизу справа на сторінці DistroKid з'явиться плаваюча панель "🎵 Прикріпити mp3": обери там ту саму папку ще раз і натисни "Прикріпити файли до треків" — файли й назви підставляться напряму в поля завантаження кожного треку (перевірено, працює як звичайний вибір файлу вручну).
+   - Це окремий крок від Кроку 1, тому що браузер із міркувань безпеки не дозволяє передавати вміст файлів із попапу розширення в сторінку — тільки текст/JSON. Реальні аудіодані можна підставити лише зсередини самої сторінки, тому папку доводиться обирати вдруге через цю панель.
+7. Обов'язково перевір результат перед відправкою (обкладинку, ISRC, дату релізу, точність назв і файлів) — розширення підставляє дані, але не гарантує їх коректність.
+
+## Формат пресету (`preset.json`)
+
+```json
+{
+  "stores": "all",
+  "recordLabel": "My Label",
+  "language": "English",
+  "genrePrimary": "Hip Hop/Rap",
+  "genreSecondary": "Pop",
+  "songwriter": {
+    "first": "Ivan",
+    "middle": "",
+    "last": "Petrenko",
+    "role": "Music and lyrics"
+  },
+  "composer": "Ivan Petrenko",
+  "featuredArtist": false,
+  "versionInfo": "none",
+  "isCoverSong": false,
+  "explicit": false,
+  "radioEditClean": false,
+  "instrumental": false,
+  "aiGenerated": false,
+  "dolbyAtmos": false,
+  "performers": [{ "role": "Bass", "name": "D.Morok" }],
+  "producers": [{ "role": "Producer", "name": "D.Morok" }],
+  "checkMandatoryCheckboxes": true
+}
+```
+
+Всі поля опціональні — що не вказано, те не чіпається.
+
+- `stores`: `"all"` (відмітити всі стори) або масив id-шників, наприклад `["spotify","applemusic","itunes","tiktok","google","amazon","deezer","tidal"]`.
+  Повний список валідних значень: `spotify, applemusic, itunes, beatport, facebook, tiktok, google (YouTube Music), amazon, rdio, deezer, tidal, iheart, qobuz, saavn, boomplay, anghami, netease, tencent, imusica (Claro Música), joox, kuackmedia, feedfm, flo, beats, snap, roblox, shazam, audiomack`.
+- `recordLabel`: текст поля "Record label".
+- `language`, `genrePrimary`, `genreSecondary`: мають **точно** співпадати (без урахування регістру) з текстом опції у відповідному списку на сторінці DistroKid.
+- `songwriter.role`: `"Music"`, `"Lyrics"` або `"Music and lyrics"`.
+- `featuredArtist`: `true`/`false` — чи є "Add featured artist to song title?".
+- `versionInfo`: `"none"` або `"radioedit"`.
+- `isCoverSong`, `originalArtist`, `originalSongTitle`, `originalSongwriters`: для кавер-версій.
+- `explicit`, `radioEditClean`, `instrumental`, `aiGenerated`, `dolbyAtmos`: `true`/`false`.
+- `performers`, `producers`: масив `{ "role": "...", "name": "..." }` для розділу Apple Music "Additional requirements" (Performer/Producer credits). Якщо рядків на сторінці менше, ніж записів у масиві, розширення саме натисне "Add another performer/producer".
+- `checkMandatoryCheckboxes`: `true` (за замовчуванням) — відмітити всі обов'язкові чекбокси внизу форми (YouTube, non-standard caps, promo services, recorded, other artist, terms і т.д. — з'являються залежно від обраних сторів).
+
+### Індивідуальні дані по треках: `tracks`
+
+Якщо треки різні (різні автори, ролі, explicit і т.д.), додай масив `tracks` — по одному об'єкту на кожен трек, **у тому ж порядку, що й mp3-файли** (природне сортування за назвою файлу). Поля всередині `tracks[i]` перекривають однакові поля верхнього рівня тільки для цього треку:
+
+```json
+{
+  "genrePrimary": "New Age",
+  "tracks": [
+    { "composer": "D.Morok", "explicit": false, "performers": [{ "role": "Bass", "name": "D.Morok" }] },
+    { "composer": "D.Morok", "explicit": true }
+  ]
+}
+```
+
+Важливо: поле `"title"` всередині `tracks[i]` розширення **ігнорує навмисно** — назви треків завжди беруться тільки з mp3-файлів (Крок 1), навіть якщо в JSON-пресеті (наприклад, експортованому через `export-form-to-json.js`) є заповнені назви. Такий JSON можна використати як шаблон — просто заміни трек-специфічні поля, назви підставляться свіжі з файлів.
+
+### Платні "Extras" — завжди вимкнені
+
+Секція "Extras (optional but awesome)" внизу форми (Leave a Legacy, Discovery Pack, Store Maximizer, DistroVid, Loudness Normalization, Social Media Pack і т.д.) **завжди примусово вимикається** при будь-якій дії розширення (заповнення назв, пресету чи прикріплення файлів) — незалежно від вмісту пресету. У JSON-схемі немає і не буде поля, яке могло б їх увімкнути — це жорстке правило в коді (`forceDisableExtras`), захист від випадкових платних послуг.
+
+## Обмеження
+
+- DistroKid ніде не публікує офіційне API — розширення читає реальну структуру сторінки (id-и, класи), тож якщо DistroKid змінить верстку форми, поля можуть перестати знаходитись. У такому разі напиши, що саме перестало працювати — поправимо селектори.
+- Аудіофайли, обкладинку, ISRC, дату релізу, ціну і зв'язок з акаунтами Spotify/Apple/YouTube/Instagram/Facebook розширення не чіпає — це або вимагає ручного вибору файлу, або залежить від стану саме твого акаунту.
+- Розширення працює тільки локально в браузері, нічого нікуди не надсилає.
