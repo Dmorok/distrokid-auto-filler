@@ -48,8 +48,8 @@
   "instrumental": false,
   "aiGenerated": false,
   "dolbyAtmos": false,
-  "performers": [{ "role": "Bass", "name": "D.Morok" }],
-  "producers": [{ "role": "Producer", "name": "D.Morok" }],
+  "performers": [{ "role": "Bass", "name": "Ivan Petrenko" }],
+  "producers": [{ "role": "Producer", "name": "Ivan Petrenko" }],
   "checkMandatoryCheckboxes": true
 }
 ```
@@ -76,8 +76,8 @@
 {
   "genrePrimary": "New Age",
   "tracks": [
-    { "composer": "D.Morok", "explicit": false, "performers": [{ "role": "Bass", "name": "D.Morok" }] },
-    { "composer": "D.Morok", "explicit": true }
+    { "composer": "Ivan Petrenko", "explicit": false, "performers": [{ "role": "Bass", "name": "Ivan Petrenko" }] },
+    { "composer": "Ivan Petrenko", "explicit": true }
   ]
 }
 ```
