@@ -169,11 +169,14 @@
     const idxs = getTrackIndices();
     const overrides = Array.isArray(preset.tracks) ? preset.tracks : null;
     const songSections = document.querySelectorAll('.requirements-song');
+    const templatedTracks = []; // tracks beyond preset.tracks[] length — filled from root/template fields only
 
     idxs.forEach((N, i) => {
       const root = document.getElementById(`js-track-table-${N}`);
       if (!root) return;
+      const hasOverride = !!(overrides && overrides[i]);
       const override = overrides ? overrides[i] || {} : {};
+      if (overrides && !hasOverride) templatedTracks.push(N);
       const t = Object.assign({}, preset, override); // per-track override wins over flat/default fields
       const songSection = songSections[i] || null;
 
@@ -264,6 +267,11 @@
       if (Array.isArray(t.producers)) fillCredits(songSection, N, 'producer', t.producers, log);
     });
     log(`Дані пресету застосовано до ${idxs.length} трек(ів).`);
+    if (templatedTracks.length) {
+      log(
+        `Трек(и) №${templatedTracks.join(', ')}: індивідуальних даних у preset.tracks нема (у пресеті лише ${overrides.length}) — застосовано загальний шаблон (кореневі поля пресету).`
+      );
+    }
   }
 
   function fillMandatoryCheckboxes(log) {
