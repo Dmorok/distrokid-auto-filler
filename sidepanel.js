@@ -156,7 +156,8 @@ $('presetInput').addEventListener('change', async (e) => {
     chrome.storage.local.set({ lastPreset: preset });
     renderPresetSummary();
   } catch (err) {
-    alert('Не вдалося прочитати JSON: ' + err.message);
+    clearLog();
+    log('Не вдалося прочитати JSON: ' + err.message);
   }
 });
 
@@ -174,7 +175,7 @@ $('btnShowAttachPanel').addEventListener('click', async () => {
   clearLog();
   const res = await sendToContent({ type: 'showAttachPanel' });
   if (res && res.logs) res.logs.forEach(log);
-  if (res && res.ok) log('Панель відкрита на сторінці DistroKid — переключись на вкладку.');
+  if (res && res.ok) log('Панель "🎵 Прикріпити mp3" відкрита на сторінці DistroKid.');
 });
 
 $('btnFillPreset').addEventListener('click', async () => {
@@ -211,3 +212,16 @@ $('btnFillAll').addEventListener('click', async () => {
   }
   refreshStatus();
 })();
+
+// The side panel stays open while the page changes (reload, adding songs, navigation),
+// so keep the status line in sync instead of checking only once like the old popup did.
+let refreshTimer = null;
+function scheduleRefresh() {
+  clearTimeout(refreshTimer);
+  refreshTimer = setTimeout(refreshStatus, 400);
+}
+chrome.tabs.onActivated.addListener(scheduleRefresh);
+chrome.tabs.onUpdated.addListener((tabId, info) => {
+  if (info.status === 'complete' || info.url) scheduleRefresh();
+});
+window.addEventListener('focus', scheduleRefresh);

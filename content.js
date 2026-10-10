@@ -1,6 +1,6 @@
 // content.js — runs on distrokid.com/new/*
 // Reads DOM structure of the DistroKid upload form and fills it based on
-// messages sent from the popup: {type:'getStatus'}, {type:'fillTitles', titles:[...]},
+// messages sent from the side panel: {type:'getStatus'}, {type:'fillTitles', titles:[...]},
 // {type:'fillPreset', preset:{...}}
 
 (function () {
@@ -310,8 +310,8 @@
   // ---------------------------------------------------------------------
   // In-page "attach real audio files" panel.
   //
-  // Extension messaging (popup -> content script) only carries JSON-serializable
-  // data, so real File objects picked in the popup can't be forwarded here.
+  // Extension messaging (side panel -> content script) only carries JSON-serializable
+  // data, so real File objects picked in the side panel can't be forwarded here.
   // To actually attach audio bytes to DistroKid's own file inputs, the folder
   // picker has to run inside THIS page (so the resulting File objects live in
   // the same document as the target <input type="file">), then we wire them in
