@@ -1,23 +1,13 @@
 'use strict';
+importScripts('shared.js');
 
 // Side panel is available only on the DistroKid upload page (distrokid.com/new...).
 // On every other tab the panel is disabled and the toolbar icon is greyed out.
 
 const PANEL_PATH = 'sidepanel.html';
 
-function isUploadPage(url) {
-  if (!url) return false;
-  try {
-    const u = new URL(url);
-    return (u.hostname === 'distrokid.com' || u.hostname === 'www.distrokid.com') &&
-      u.pathname.startsWith('/new');
-  } catch (e) {
-    return false;
-  }
-}
-
 async function applyToTab(tabId, url) {
-  const enabled = isUploadPage(url);
+  const enabled = DKShared.isUploadPage(url);
   try {
     if (enabled) {
       await chrome.sidePanel.setOptions({ tabId, path: PANEL_PATH, enabled: true });

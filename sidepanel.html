@@ -67,6 +67,8 @@
     font-size: 12px;
     margin-top: 4px;
   }
+  .hint { font-size:12px; line-height:1.5; color:#3a3a3c; }
+  .log.diag { color:#e6e6e6; }
   .file-list {
     max-height: 40vh;
     overflow-y: auto;
@@ -114,47 +116,39 @@
   <div id="pageStatus" class="status">Перевірка сторінки…</div>
 
   <section>
-    <h2>1. Папка з mp3</h2>
-    <input type="file" id="folderInput" webkitdirectory multiple />
-    <div class="row">
-      <label for="stripUuid">Прибрати UUID в кінці назви (- 10f89618-…)</label>
-      <input type="checkbox" id="stripUuid" checked />
-    </div>
-    <div class="row">
-      <label for="stripTrackNum">Прибрати номер треку з назви (01 - …)</label>
-      <input type="checkbox" id="stripTrackNum" checked />
-    </div>
-    <div class="row">
-      <label for="stripUnderscore">Замінити _ і - на пробіли</label>
-      <input type="checkbox" id="stripUnderscore" checked />
-    </div>
-    <div id="fileList" class="file-list" style="display:none;"></div>
-  </section>
-
-  <section>
-    <h2>2. Пресет JSON</h2>
+    <h2>1. Пресет JSON</h2>
     <input type="file" id="presetInput" accept="application/json" />
     <div id="presetSummary" class="preset-summary" style="display:none;"></div>
+    <button id="btnExportPreset" class="secondary">Зберегти поточну форму як пресет</button>
   </section>
 
   <section>
-    <h2>3. Дія</h2>
-    <button id="btnFillAll">Заповнити все (назви + пресет)</button>
-    <button id="btnFillTitles" class="secondary">Тільки назви треків</button>
-    <button id="btnFillPreset" class="secondary">Тільки дані пресету</button>
-  </section>
-
-  <section>
-    <h2>4. Аудіофайли</h2>
-    <div style="font-size:12px; line-height:1.5; color:#3a3a3c;">
-      Через обмеження безпеки браузера файли з бічної панелі не можна підставити напряму в поле завантаження сторінки.
-      Натисни кнопку нижче — на сторінці DistroKid з'явиться плаваюча панель "🎵 Прикріпити mp3", де можна ще раз обрати ту саму папку і файли підставляться в аудіо-поля треків автоматично.
+    <h2>2. Mp3 і назви треків</h2>
+    <div class="hint">
+      Папка з mp3 обирається один раз — у панелі "🎵 Прикріпити mp3" на самій сторінці DistroKid.
+      Звідти ж підставляються назви треків і, якщо стоїть галочка, дані пресету.
     </div>
-    <button id="btnShowAttachPanel" class="secondary">Показати панель на сторінці</button>
+    <button id="btnShowAttachPanel">Відкрити панель mp3 на сторінці</button>
+  </section>
+
+  <section>
+    <h2>3. Лише пресет</h2>
+    <div class="row">
+      <label for="skipFilled">Не перезаписувати заповнені поля</label>
+      <input type="checkbox" id="skipFilled" />
+    </div>
+    <button id="btnFillPreset" class="secondary">Застосувати пресет до форми</button>
+  </section>
+
+  <section>
+    <h2>4. Діагностика</h2>
+    <div class="hint">Показує, які поля форми розширення знаходить на сторінці. Корисно, якщо DistroKid змінив сайт.</div>
+    <button id="btnDiagnose" class="secondary">Перевірити поля форми</button>
   </section>
 
   <div id="log" class="log" style="display:none;"></div>
 
+  <script src="shared.js"></script>
   <script src="sidepanel.js"></script>
 </body>
 </html>
